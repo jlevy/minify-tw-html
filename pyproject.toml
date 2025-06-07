@@ -38,6 +38,7 @@ classifiers = [
 # ---- Main dependencies ----
 
 dependencies = [
+    "prettyfmt>=0.4.0",
 ]
 
 
@@ -56,7 +57,7 @@ dev = [
 
 [project.scripts]
 # Add script entry points here:
-minify-tw-html = "minify_tw_html:main"
+minify-tw-html = "minify_tw_html.cli:main"
 
 
 # ---- Build system ----
@@ -158,7 +159,7 @@ reportUnreachable = false
 [tool.codespell]
 # Add here as needed:
 # ignore-words-list = "foo,bar"
-# skip = "foo.py,bar.py"
+skip = "src/minify_tw_html/javascript/node_modules"
 
 [tool.pytest.ini_options]
 python_files = ["*.py"]

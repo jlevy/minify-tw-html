@@ -1,0 +1,10 @@
+{
+  "name": "minify-tw-html",
+  "version": "1.0.0",
+  "description": "JavaScript dependencies for HTML minification with Tailwind CSS v4 compilation",
+  "dependencies": {
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/cli": "^4.0.0",
+    "html-minifier-terser": "^7.0.0"
+  }
+} 
