@@ -84,15 +84,12 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
         js_dir = get_js_dir()
 
-        # Compile Tailwind CSS v4
-        tw_css = """@import "tailwindcss";"""
+        # Compile Tailwind CSS v4 using permanent input.css
+        input_css = js_dir / "input.css"
 
-        # Create temp files in the js directory so imports can be resolved
-        with tempfile.TemporaryDirectory(dir=js_dir) as tmpdir:
+        # Create temp directory adjacent to destination file
+        with tempfile.TemporaryDirectory(dir=dest_html.parent) as tmpdir:
             tmp_path = Path(tmpdir)
-            input_css = tmp_path / "input.css"
-            input_css.write_text(tw_css, encoding="utf8")
-
             output_css = tmp_path / "tailwind.min.css"
 
             tailwind_cmd = [
