@@ -25,10 +25,12 @@ def get_js_dir():
 
     # Install npm packages if not already installed
     if not node_modules.exists():
+        npm_cmd = ["npm", "install"]
         log.info("Installing npm dependencies...")
+        log.info(f"Running: {' '.join(npm_cmd)}")
         try:
             subprocess.run(
-                ["npm", "install"],
+                npm_cmd,
                 cwd=js_dir,
                 check=True,
                 capture_output=True,
@@ -89,18 +91,19 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
             output_css = tmp_path / "tailwind.min.css"
 
-            log.info("Compiling Tailwind CSS v4...")
+            tailwind_cmd = [
+                "npx",
+                "@tailwindcss/cli",
+                "-i",
+                str(input_css),
+                "-o",
+                str(output_css),
+                "--minify",
+            ]
+            log.info(f"Running: {' '.join(tailwind_cmd)}")
             try:
                 result = subprocess.run(
-                    [
-                        "npx",
-                        "@tailwindcss/cli",
-                        "-i",
-                        str(input_css),
-                        "-o",
-                        str(output_css),
-                        "--minify",
-                    ],
+                    tailwind_cmd,
                     cwd=js_dir,  # Run in the JavaScript directory with installed packages
                     check=True,
                     capture_output=True,
@@ -143,21 +146,23 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
             tmp_file.write(processed_html)
             tmp_html_path = tmp_file.name
 
+        minifier_cmd = [
+            "npx",
+            "html-minifier-terser",
+            "--collapse-whitespace",
+            "--remove-comments",
+            "--minify-css",
+            "true",
+            "--minify-js",
+            "true",
+            "-o",
+            str(dest_html.absolute()),
+            tmp_html_path,
+        ]
+        log.info(f"Running: {' '.join(minifier_cmd)}")
         try:
             result = subprocess.run(
-                [
-                    "npx",
-                    "html-minifier-terser",
-                    "--collapse-whitespace",
-                    "--remove-comments",
-                    "--minify-css",
-                    "true",
-                    "--minify-js",
-                    "true",
-                    "-o",
-                    str(dest_html.absolute()),
-                    tmp_html_path,
-                ],
+                minifier_cmd,
                 cwd=js_dir,  # Run in the JavaScript directory with installed packages
                 check=True,
                 capture_output=True,
@@ -193,7 +198,7 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
     if minify_html:
         actions.append("HTML minified")
 
-    action_str = " + " + ", ".join(actions) if actions else "Processed"
+    action_str = ", ".join(actions) if actions else "Processed"
 
     # Calculate percentage change
     pct_change = ((final_size - initial_size) / initial_size) * 100

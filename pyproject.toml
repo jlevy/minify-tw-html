@@ -83,6 +83,24 @@ bump = "true"
 [tool.hatch.build.targets.wheel]
 # The source location for the package.
 packages = ["src/minify_tw_html"]
+# Exclude node_modules from wheel - they will be installed at runtime
+exclude = [
+  "src/minify_tw_html/javascript/node_modules",
+  "src/minify_tw_html/javascript/package-lock.json",
+  "src/minify_tw_html/javascript/.gitignore",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+# Include package.json which will be used for npm install at runtime
+"src/minify_tw_html/javascript/package.json" = "minify_tw_html/javascript/package.json"
+
+[tool.hatch.build.targets.sdist]
+# Exclude node_modules from source distribution too
+exclude = [
+  "src/minify_tw_html/javascript/node_modules",
+  "src/minify_tw_html/javascript/package-lock.json",
+  "src/minify_tw_html/javascript/.gitignore",
+]
 
 
 # ---- Settings ----

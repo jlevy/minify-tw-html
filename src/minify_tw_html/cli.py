@@ -35,13 +35,11 @@ def main():
 
     args = parser.parse_args()
 
-    # Set up logging with clean output for CLI usage
     if args.verbose:
-        # Verbose mode: include level names for debugging
-        logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+        level = logging.INFO
     else:
-        # Default mode: clean output without level prefixes
-        logging.basicConfig(level=logging.WARNING, format="%(message)s")
+        level = logging.WARNING
+    logging.basicConfig(level=level, format="%(message)s")
 
     minify_tw_html(args.src_html, args.dest_html, minify_html=not args.no_minify)
 
