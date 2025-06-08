@@ -210,5 +210,5 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
     elapsed_time = time.time() - start_time
     log.warning(
         f"{action_str}: {fmt_size_dual(initial_size)} → {fmt_size_dual(final_size)}{pct_str}"
-        f" in {fmt_timedelta(elapsed_time)}"
+        f" in {fmt_timedelta(elapsed_time, brief=True)}"
     )
