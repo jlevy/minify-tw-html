@@ -27,8 +27,48 @@ compilation, so switched to this approach.
 
 ## CLI Use
 
-Save a file like this for example as `page.html`. Note we are using the Play CDN for
-simple zero-build development:
+It's recommend to be [using uv](installation.md).
+Then to install:
+
+```shell
+$ uv tool install --upgrade minify-tw-html
+Resolved 6 packages in 373ms
+Prepared 6 packages in 0.62ms
+Installed 6 packages in 8ms
+ + humanize==4.12.3
+ + minify-tw-html==0.1.2
+ + pluralizer==1.2.0
+ + prettyfmt==0.4.0
+ + strif==3.0.1
+ + text-unidecode==1.3
+Installed 1 executable: minify-tw-html
+
+$ minify-tw-html --help
+usage: minify-tw-html [-h] [--no-minify] [--verbose] src_html dest_html
+
+CLI for HTML minification with Tailwind CSS v4 compilation.
+
+This script can be used for general HTML minification (including inline CSS/JS) and/or
+Tailwind CSS v4 compilation and inlining (replacing CDN script with compiled CSS).
+
+Minification includes:
+- HTML structure: whitespace removal, comment removal
+- Inline CSS: all <style> tags and style attributes are minified
+- Inline JavaScript: all <script> tags are minified (not external JS files)
+
+positional arguments:
+  src_html       Input HTML file.
+  dest_html      Output HTML file.
+
+options:
+  -h, --help     show this help message and exit
+  --no-minify    Skip HTML minification (only compile Tailwind if present).
+  --verbose, -v  Enable verbose logging.
+```
+
+Now take a file you want to minimize.
+Let's put this file into `page.html`. Note we are using the Play CDN for simple
+zero-build development:
 
 ```html
 <!DOCTYPE html>
@@ -70,35 +110,7 @@ simple zero-build development:
 </html>
 ```
 
-If you want to minify it and compile all Tailwind CSS.
-
-Get help:
-
-```shell
-$ minify-tw-html --help
-usage: minify-tw-html [-h] [--no-minify] [--verbose] src_html dest_html
-
-CLI for HTML minification with Tailwind CSS v4 compilation.
-
-This script can be used for general HTML minification (including inline CSS/JS) and/or
-Tailwind CSS v4 compilation and inlining (replacing CDN script with compiled CSS).
-
-Minification includes:
-- HTML structure: whitespace removal, comment removal
-- Inline CSS: all <style> tags and style attributes are minified
-- Inline JavaScript: all <script> tags are minified (not external JS files)
-
-positional arguments:
-  src_html       Input HTML file.
-  dest_html      Output HTML file.
-
-options:
-  -h, --help     show this help message and exit
-  --no-minify    Skip HTML minification (only compile Tailwind if present).
-  --verbose, -v  Enable verbose logging.
-```
-
-Run it:
+If you want to minify it and compile all Tailwind CSS:
 
 ```shell
 $ minify-tw-html page.html page.min.html --verbose
