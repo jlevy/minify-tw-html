@@ -3,9 +3,11 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 
-from prettyfmt import fmt_size_dual
+from prettyfmt import fmt_path, fmt_size_dual, fmt_timedelta
+from strif import atomic_output_file
 
 log = logging.getLogger(__name__)
 
@@ -60,6 +62,8 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
         dest_html: Output HTML file
         minify_html: Whether to minify the HTML output
     """
+    start_time = time.time()
+
     # Get initial file size
     initial_size = src_html.stat().st_size
 
@@ -130,63 +134,65 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
         log.info("Tailwind CSS v4 compiled and inlined successfully")
     else:
-        log.info("No Tailwind v4 CDN script found - proceeding with standard HTML processing")
+        log.info("No Tailwind v4 CDN script found, proceeding with standard HTML processing")
         processed_html = html_text
 
-    # Minification step (works with or without Tailwind)
+    with atomic_output_file(dest_html) as dest_temp:
+        if minify_html:
+            log.info("Minifying HTML (including inline CSS and JS)...")
+
+            js_dir = get_js_dir()
+
+            # Write processed HTML to a temp file for html-minifier-terser
+            with tempfile.NamedTemporaryFile(
+                mode="w", prefix=dest_html.stem, suffix=".html", delete=False, dir=dest_html.parent
+            ) as tmp_file:
+                tmp_file.write(processed_html)
+                tmp_html_path = tmp_file.name
+
+            minifier_cmd = [
+                "npx",
+                "html-minifier-terser",
+                "--collapse-whitespace",
+                "--remove-comments",
+                "--minify-css",
+                "true",
+                "--minify-js",
+                "true",
+                "-o",
+                str(dest_temp.absolute()),
+                tmp_html_path,
+            ]
+            log.info(f"Running: {' '.join(minifier_cmd)}")
+            try:
+                result = subprocess.run(
+                    minifier_cmd,
+                    cwd=js_dir,  # Run in the JavaScript directory with installed packages
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                if result.stdout:
+                    log.info(f"HTML minifier output: {result.stdout}")
+                if result.stderr:
+                    log.info(f"HTML minifier stderr: {result.stderr}")
+            except subprocess.CalledProcessError as e:
+                log.error(f"HTML minifier command failed with exit code {e.returncode}")
+                if e.stdout:
+                    log.error(f"HTML minifier stdout: {e.stdout}")
+                if e.stderr:
+                    log.error(f"HTML minifier stderr: {e.stderr}")
+                raise BuildError(f"HTML minification failed:\n{e.stderr}") from e
+            finally:
+                # Clean up temp file
+                Path(tmp_html_path).unlink(missing_ok=True)
+        else:
+            dest_temp.write_text(processed_html, encoding="utf8")
+
     if minify_html:
-        log.info("Minifying HTML (including inline CSS and JS)...")
-
-        js_dir = get_js_dir()
-
-        # Write processed HTML to a temp file for html-minifier-terser
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".html", delete=False, dir=js_dir
-        ) as tmp_file:
-            tmp_file.write(processed_html)
-            tmp_html_path = tmp_file.name
-
-        minifier_cmd = [
-            "npx",
-            "html-minifier-terser",
-            "--collapse-whitespace",
-            "--remove-comments",
-            "--minify-css",
-            "true",
-            "--minify-js",
-            "true",
-            "-o",
-            str(dest_html.absolute()),
-            tmp_html_path,
-        ]
-        log.info(f"Running: {' '.join(minifier_cmd)}")
-        try:
-            result = subprocess.run(
-                minifier_cmd,
-                cwd=js_dir,  # Run in the JavaScript directory with installed packages
-                check=True,
-                capture_output=True,
-                text=True,
-            )
-            if result.stdout:
-                log.info(f"HTML minifier output: {result.stdout}")
-            if result.stderr:
-                log.info(f"HTML minifier stderr: {result.stderr}")
-        except subprocess.CalledProcessError as e:
-            log.error(f"HTML minifier command failed with exit code {e.returncode}")
-            if e.stdout:
-                log.error(f"HTML minifier stdout: {e.stdout}")
-            if e.stderr:
-                log.error(f"HTML minifier stderr: {e.stderr}")
-            raise BuildError(f"HTML minification failed:\n{e.stderr}") from e
-        finally:
-            # Clean up temp file
-            Path(tmp_html_path).unlink(missing_ok=True)
-
-        log.info(f"HTML minified and written to {dest_html}")
+        log.info(f"HTML minified and written: {fmt_path(dest_html)}")
     else:
-        dest_html.write_text(processed_html, encoding="utf8")
-        log.info(f"HTML written to {dest_html} (no minification)")
+        log.info(f"HTML written (no minification): {fmt_path(dest_html)}")
 
     # Get final file size and print statistics
     final_size = dest_html.stat().st_size
@@ -204,6 +210,8 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
     pct_change = ((final_size - initial_size) / initial_size) * 100
     pct_str = f" ({pct_change:+.1f}%)"
 
+    elapsed_time = time.time() - start_time
     log.warning(
         f"{action_str}: {fmt_size_dual(initial_size)} → {fmt_size_dual(final_size)}{pct_str}"
+        f" in {fmt_timedelta(elapsed_time)}"
     )

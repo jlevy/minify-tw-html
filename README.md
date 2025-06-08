@@ -7,24 +7,23 @@ configurable, well-tested, JavaScript-based HTML minifier) and the
 
 - It lets you use the [Play CDN](https://tailwindcss.com/docs/installation/play-cdn) for
   rapid development, then lets you minify your HTML/CSS/JavaScript and Tailwind CSS with
-  a single command.
+  a single command from the CLI (no npm project setup).
 
-- It can be added as a Python dependency to a Python project
-
-- It can be used as a library from Python.
+- If you're using Python, it can be added as a PyPI dependency to a project and used as
+  a minification library from Python.
 
 It checks for an npm installation and uses that, raising an error if not available.
 If it finds npm it does its own `npm install` so it's self-contained.
+The required npm packages are cached locally.
 
-Why?
+Why? It seems like Tailwind v4 compilation should be a simple operation should be a
+single CLI command and (optionally) be easily combined with a modern full-featured
+minifier like html-minifier-terser but I didn't find an existing tool for this.
 
-It seems like modern minification and Tailwind v4 minification should be a simple
-operation.
-
-I had been using the [minify-html](https://github.com/wilsonzlin/minify-html) (which has
-a convenient [Python package](https://pypi.org/project/minify-html/)) previously.
-It is great and fast, but ran into some unfixed bugs and the need for Tailwind support,
-so switched to this approach.
+Previously I had been using the [minify-html](https://github.com/wilsonzlin/minify-html)
+(which has a convenient [Python package](https://pypi.org/project/minify-html/)). It is
+great and fast, but ran into some unfixed bugs and wanted proper Tailwind v4
+compilation, so switched to this approach.
 
 ## CLI Use
 
