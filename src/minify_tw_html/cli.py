@@ -13,24 +13,11 @@ Minification includes:
 
 import argparse
 import logging
-from importlib.metadata import version
 from pathlib import Path
 from textwrap import dedent
 
-from .main import minify_tw_html
-
-APP_NAME = "minify-tw-html"
-
-DESCRIPTION = """HTML minification with Tailwind CSS v4 compilation"""
-
-
-def get_version_name() -> str:
-    """Get formatted version string"""
-    try:
-        app_version = version(APP_NAME)
-        return f"{APP_NAME} v{app_version}"
-    except Exception:
-        return "(unknown version)"
+from minify_tw_html.main import minify_tw_html
+from minify_tw_html.version import DESCRIPTION, get_version_name
 
 
 def build_parser() -> argparse.ArgumentParser:
