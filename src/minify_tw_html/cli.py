@@ -45,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("src_html", type=Path, help="Input HTML file.")
     parser.add_argument("dest_html", type=Path, help="Output HTML file.")
     parser.add_argument(
-        "--no-minify",
+        "--no_minify",
         action="store_true",
         help="Skip HTML minification (only compile Tailwind if present).",
     )

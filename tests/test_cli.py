@@ -50,7 +50,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "basic.html"
         output_file = Path(tmpdir) / "basic_output.html"
 
-        input_file.write_text(basic_html, encoding="utf8")
+        input_file.write_text(basic_html)
 
         result = run_minify_cli(input_file, output_file, "--verbose")
 
@@ -58,11 +58,12 @@ def test_cli_comprehensive():
         assert output_file.exists()
         assert output_file.stat().st_size > 0
         assert "No Tailwind v4 CDN script found" in result.stderr
-        assert re.search(r"HTML minified: \d+ bytes → \d+ bytes \(-\d+\.\d+%\)", result.stderr)
+        assert re.search(r"HTML minified: \d+ bytes → \d+ bytes", result.stderr)
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "<!-- This comment should be removed -->" not in output_content
         assert "margin:0" in output_content  # CSS should be minified
+        assert ".test-class" in output_content  # Custom CSS class preserved
 
     # Test case 2: Tailwind CDN script detection and replacement
     tailwind_cdn_html = dedent("""
@@ -86,7 +87,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "tailwind_cdn.html"
         output_file = Path(tmpdir) / "tailwind_cdn_output.html"
 
-        input_file.write_text(tailwind_cdn_html, encoding="utf8")
+        input_file.write_text(tailwind_cdn_html)
 
         result = run_minify_cli(input_file, output_file, "--verbose")
 
@@ -95,11 +96,10 @@ def test_cli_comprehensive():
         assert output_file.stat().st_size > 0
         assert "Tailwind v4 CDN script detected" in result.stderr
         assert re.search(
-            r"Tailwind CSS compiled, HTML minified: \d+ bytes → \d+ bytes \(\+\d+\.\d+%\)",
-            result.stderr,
+            r"Tailwind CSS compiled, HTML minified: \d+ bytes → \d+ bytes", result.stderr
         )
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "@tailwindcss/browser" not in output_content
         assert "<style>" in output_content
         assert "tailwindcss" in output_content.lower()
@@ -138,7 +138,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "forced.html"
         output_file = Path(tmpdir) / "forced_output.html"
 
-        input_file.write_text(tailwind_forced_html, encoding="utf8")
+        input_file.write_text(tailwind_forced_html)
 
         result = run_minify_cli(input_file, output_file, "--tailwind", "--verbose")
 
@@ -147,11 +147,10 @@ def test_cli_comprehensive():
         assert output_file.stat().st_size > 0
         assert "Forcing Tailwind CSS compilation (--tailwind flag used)" in result.stderr
         assert re.search(
-            r"Tailwind CSS compiled, HTML minified: \d+ bytes → \d+ bytes \(\+\d+\.\d+%\)",
-            result.stderr,
+            r"Tailwind CSS compiled, HTML minified: \d+ bytes → \d+ bytes", result.stderr
         )
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "<head><style>" in output_content
         assert "tailwindcss" in output_content.lower()
 
@@ -168,41 +167,39 @@ def test_cli_comprehensive():
         assert "tailwindcss" in css_content  # Should contain Tailwind header
         assert "box-sizing:border-box" in css_content  # Should contain reset styles
 
-    # Test case 4: --no-minify preserves formatting
+    # Test case 4: --no_minify preserves formatting
     with tempfile.TemporaryDirectory() as tmpdir:
         input_file = Path(tmpdir) / "no_minify.html"
         output_file = Path(tmpdir) / "no_minify_output.html"
 
-        input_file.write_text(tailwind_cdn_html, encoding="utf8")
+        input_file.write_text(tailwind_cdn_html)
 
-        result = run_minify_cli(input_file, output_file, "--no-minify", "--verbose")
+        result = run_minify_cli(input_file, output_file, "--no_minify", "--verbose")
 
         assert result.returncode == 0
         assert output_file.exists()
         assert output_file.stat().st_size > 0
         assert "Tailwind CSS compiled:" in result.stderr
         assert "no minification" in result.stderr
-        assert re.search(
-            r"Tailwind CSS compiled: \d+ bytes → \d+ bytes \(\+\d+\.\d+%\)", result.stderr
-        )
+        assert re.search(r"Tailwind CSS compiled: \d+ bytes → \d+ bytes", result.stderr)
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "\n" in output_content  # Formatting preserved
 
-    # Test case 5: --tailwind + --no-minify combination
+    # Test case 5: --tailwind + --no_minify combination
     with tempfile.TemporaryDirectory() as tmpdir:
         input_file = Path(tmpdir) / "forced_no_minify.html"
         output_file = Path(tmpdir) / "forced_no_minify_output.html"
 
-        input_file.write_text(tailwind_forced_html, encoding="utf8")
+        input_file.write_text(tailwind_forced_html)
 
-        result = run_minify_cli(input_file, output_file, "--tailwind", "--no-minify", "--verbose")
+        result = run_minify_cli(input_file, output_file, "--tailwind", "--no_minify", "--verbose")
 
         assert result.returncode == 0
         assert "Forcing Tailwind CSS compilation (--tailwind flag used)" in result.stderr
         assert "no minification" in result.stderr
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "\n" in output_content
         assert "<head><style>" in output_content
 
@@ -223,7 +220,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "no_head.html"
         output_file = Path(tmpdir) / "no_head_output.html"
 
-        input_file.write_text(no_head_html, encoding="utf8")
+        input_file.write_text(no_head_html)
 
         result = run_minify_cli(input_file, output_file, "--tailwind", "--verbose")
 
@@ -231,7 +228,7 @@ def test_cli_comprehensive():
         assert output_file.stat().st_size > 10
         assert "Forcing Tailwind CSS compilation" in result.stderr
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "<head><style>" in output_content
 
     # Test case 7: Older Tailwind versions should be ignored
@@ -252,7 +249,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "old_tailwind.html"
         output_file = Path(tmpdir) / "old_tailwind_output.html"
 
-        input_file.write_text(old_tailwind_html, encoding="utf8")
+        input_file.write_text(old_tailwind_html)
 
         result = run_minify_cli(input_file, output_file, "--verbose")
 
@@ -261,7 +258,7 @@ def test_cli_comprehensive():
         assert "No Tailwind v4 CDN script found" in result.stderr
         assert "Tailwind CSS compiled" not in result.stderr
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "cdn.tailwindcss.com" in output_content  # Old CDN preserved
 
     # Test case 8: --tailwind works even with existing CDN (should use CDN detection)
@@ -269,7 +266,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "both_cdn_and_flag.html"
         output_file = Path(tmpdir) / "both_cdn_and_flag_output.html"
 
-        input_file.write_text(tailwind_cdn_html, encoding="utf8")
+        input_file.write_text(tailwind_cdn_html)
 
         result = run_minify_cli(input_file, output_file, "--tailwind", "--verbose")
 
@@ -277,7 +274,7 @@ def test_cli_comprehensive():
         assert "Tailwind v4 CDN script detected" in result.stderr
         assert "Forcing Tailwind CSS compilation" not in result.stderr
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "@tailwindcss/browser" not in output_content
         assert "<style>" in output_content
 
@@ -307,7 +304,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "utilities.html"
         output_file = Path(tmpdir) / "utilities_output.html"
 
-        input_file.write_text(utility_test_html, encoding="utf8")
+        input_file.write_text(utility_test_html)
 
         result = run_minify_cli(input_file, output_file, "--tailwind", "--verbose")
 
@@ -316,7 +313,7 @@ def test_cli_comprehensive():
         assert output_file.stat().st_size > 10
         assert "Forcing Tailwind CSS compilation" in result.stderr
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "<head><style>" in output_content
 
         # Verify the original classes remain in HTML
@@ -355,7 +352,7 @@ def test_cli_comprehensive():
         input_file = Path(tmpdir) / "simple.html"
         output_file = Path(tmpdir) / "simple_output.html"
 
-        input_file.write_text(simple_test_html, encoding="utf8")
+        input_file.write_text(simple_test_html)
 
         result = run_minify_cli(input_file, output_file, "--tailwind")
 
@@ -363,7 +360,7 @@ def test_cli_comprehensive():
         assert output_file.exists()
         assert output_file.stat().st_size > 10
 
-        output_content = output_file.read_text(encoding="utf8")
+        output_content = output_file.read_text()
         assert "<head><style>" in output_content
         assert "p-4 text-white bg-blue-500" in output_content  # Classes preserved in HTML
 
@@ -377,3 +374,109 @@ def test_cli_comprehensive():
 
         print(f"Simple test - CSS length: {len(css_content)} characters")
         print("Simple test - Contains classes: p-4, text-white, bg-blue-500")
+
+    # Test case 11: Verify custom CSS and Tailwind utility classes work together
+    custom_and_tailwind_html = dedent("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Custom CSS and Tailwind Test</title>
+            <style>
+                /* Custom CSS classes should be preserved */
+                .my-custom-class {
+                    background: linear-gradient(45deg, #ff6b6b, #feca57);
+                    border: 2px solid #333;
+                }
+                .special-font {
+                    font-family: Georgia, serif;
+                    letter-spacing: 0.05em;
+                }
+            </style>
+        </head>
+        <body class="bg-gray-100 p-8">
+            <div class="my-custom-class p-4 rounded-lg">
+                <h1 class="text-2xl font-bold text-white special-font">Custom + Tailwind</h1>
+                <p class="text-white opacity-90 mt-2">This uses both custom CSS and Tailwind utilities.</p>
+            </div>
+            <div class="mt-4 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-800">Pure Tailwind</h2>
+                <p class="text-gray-600 mt-2">This only uses Tailwind utility classes.</p>
+            </div>
+        </body>
+        </html>
+    """).strip()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        input_file = Path(tmpdir) / "custom_tailwind.html"
+        output_file = Path(tmpdir) / "custom_tailwind_output.html"
+
+        input_file.write_text(custom_and_tailwind_html)
+
+        result = run_minify_cli(input_file, output_file, "--tailwind", "--verbose")
+
+        assert result.returncode == 0
+        output_content = output_file.read_text()
+
+        # Verify custom CSS classes are preserved
+        assert ".my-custom-class" in output_content
+        assert ".special-font" in output_content
+        assert (
+            "linear-gradient(45deg,#ff6b6b,#feca57)" in output_content
+            or "linear-gradient" in output_content
+        )
+        assert "Georgia" in output_content or "font-family" in output_content
+
+        # Verify Tailwind classes in HTML are preserved
+        assert "bg-gray-100" in output_content
+        assert "text-2xl font-bold" in output_content
+        assert "rounded-xl shadow-lg" in output_content
+
+        # Verify Tailwind CSS was injected
+        css_content = output_content[
+            output_content.find("<style>") : output_content.find("</style>")
+        ]
+        assert "tailwindcss" in css_content
+
+        print("Custom CSS + Tailwind test passed!")
+
+    # Test case 12: Test @apply directives and CSS extraction using the modern example
+    modern_example_path = Path(__file__).parent / "test_modern_tailwind.html"
+    if modern_example_path.exists():
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_file = Path(tmpdir) / "modern_output.html"
+
+            result = run_minify_cli(modern_example_path, output_file, "--verbose")
+
+            assert result.returncode == 0
+            assert output_file.exists()
+            assert output_file.stat().st_size > 10000  # Should be substantial due to CSS
+            assert "Tailwind v4 CDN script detected" in result.stderr
+
+            output_content = output_file.read_text()
+
+            # Verify @apply directives were expanded
+            assert ".btn-primary" in output_content
+            assert ".btn-secondary" in output_content
+            assert ".card" in output_content
+            assert ".input-field" in output_content
+
+            # Verify custom CSS was preserved
+            assert ".gradient-hero" in output_content
+            assert ".accent-button" in output_content
+            assert ".fade-in" in output_content
+            assert "@keyframes shimmer" in output_content
+            assert "@keyframes fadeIn" in output_content
+
+            # Verify CSS variables are preserved
+            assert (
+                "--accent-color:#10b981" in output_content
+                or "--accent-color: #10b981" in output_content
+            )
+
+            # Verify no CDN script remains
+            assert "@tailwindcss/browser" not in output_content
+
+            # Verify HTML is minified
+            assert "\n" not in output_content  # Should be single line
+
+            print("Modern Tailwind example with @apply directives test passed!")

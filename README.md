@@ -44,7 +44,7 @@ Installed 6 packages in 8ms
 Installed 1 executable: minify-tw-html
 
 $ minify-tw-html --help
-usage: minify-tw-html [-h] [--version] [--no-minify] [--preflight] [--tailwind] [--verbose]
+usage: minify-tw-html [-h] [--version] [--no_minify] [--preflight] [--tailwind] [--verbose]
                       src_html dest_html
 
 HTML minification with Tailwind CSS v4 compilation
@@ -56,7 +56,7 @@ positional arguments:
 options:
   -h, --help     show this help message and exit
   --version      show program's version number and exit
-  --no-minify    Skip HTML minification (only compile Tailwind if present).
+  --no_minify    Skip HTML minification (only compile Tailwind if present).
   --preflight    Enable Tailwind's preflight CSS reset (disabled by default to preserve custom styles).
   --tailwind     Force Tailwind CSS compilation even if CDN script is not present.
   --verbose, -v  Enable verbose logging.
