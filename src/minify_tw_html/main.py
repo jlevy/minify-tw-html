@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 import shutil
@@ -5,6 +6,7 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
+from typing import Any
 
 from prettyfmt import fmt_path, fmt_size_dual, fmt_timedelta
 from strif import atomic_output_file
@@ -14,6 +16,23 @@ log = logging.getLogger(__name__)
 
 class BuildError(RuntimeError):
     """Raised if any step in the build fails."""
+
+
+def get_config_js(src_html: Path, preflight: bool) -> str:
+    """
+    Create Tailwind config as JavaScript module format.
+    """
+    config_dict: dict[str, Any] = {
+        "content": [str(src_html)],
+        "corePlugins": {
+            "preflight": preflight,
+        },
+        "theme": {
+            "extend": {},
+        },
+        "plugins": [],
+    }
+    return f"module.exports = {json.dumps(config_dict, indent=2)};"
 
 
 def get_js_dir():
@@ -44,13 +63,21 @@ def get_js_dir():
     return js_dir
 
 
-def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True):
+def minify_tw_html(
+    src_html: Path,
+    dest_html: Path,
+    *,
+    minify_html: bool = True,
+    preflight: bool = False,
+    force_tailwind: bool = False,
+):
     """
     Process HTML file with optional Tailwind CSS v4 compilation and minification.
 
     This function will:
     1. Check for Tailwind v4 CDN script tags and compile/inline CSS if found
-    2. Optionally minify the entire HTML including inline CSS and JS
+    2. Optionally force Tailwind compilation even without CDN script
+    3. Optionally minify the entire HTML including inline CSS and JS
 
     Expected Tailwind v4 CDN script formats:
     - <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -61,6 +88,8 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
         src_html: Input HTML file
         dest_html: Output HTML file
         minify_html: Whether to minify the HTML output
+        preflight: Whether to enable Tailwind's preflight CSS reset (default: False)
+        force_tailwind: Whether to force Tailwind compilation even without CDN script
     """
     start_time = time.time()
 
@@ -74,8 +103,14 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
     tailwind_found = bool(re.search(cdn_pattern, html_text, re.I))
 
-    if tailwind_found:
-        log.info("Tailwind v4 CDN script detected - will compile and inline Tailwind CSS")
+    # Determine if we should compile Tailwind
+    should_compile_tailwind = tailwind_found or force_tailwind
+
+    if should_compile_tailwind:
+        if tailwind_found:
+            log.warning("Tailwind v4 CDN script detected - will compile and inline Tailwind CSS")
+        else:
+            log.warning("Forcing Tailwind CSS compilation (--tailwind flag used)")
 
         if shutil.which("npx") is None:
             raise BuildError(
@@ -92,6 +127,13 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
             tmp_path = Path(tmpdir)
             output_css = tmp_path / "tailwind.min.css"
 
+            # Create temporary tailwind config that scans the input HTML
+            temp_config = tmp_path / "tailwind.config.js"
+
+            # Create config for Tailwind
+            config_js = get_config_js(src_html, preflight)
+            temp_config.write_text(config_js)
+
             tailwind_cmd = [
                 "npx",
                 "@tailwindcss/cli",
@@ -99,6 +141,8 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
                 str(input_css),
                 "-o",
                 str(output_css),
+                "--config",
+                str(temp_config),
                 "--minify",
             ]
             log.info(f"Running: {' '.join(tailwind_cmd)}")
@@ -124,14 +168,35 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
             css_text = output_css.read_text(encoding="utf8")
 
-        # Replace Tailwind CDN script with compiled CSS
-        processed_html = re.sub(
-            cdn_pattern, f"<style>{css_text}</style>", html_text, count=1, flags=re.I
-        )
+        if tailwind_found:
+            # Replace Tailwind CDN script with compiled CSS
+            processed_html = re.sub(
+                cdn_pattern, f"<style>{css_text}</style>", html_text, count=1, flags=re.I
+            )
+        else:
+            # No CDN script found, inject CSS into <head>
+            head_pattern = r"(<head[^>]*>)"
+            if re.search(head_pattern, html_text, re.I):
+                # Insert after opening <head> tag
+                processed_html = re.sub(
+                    head_pattern, rf"\1<style>{css_text}</style>", html_text, count=1, flags=re.I
+                )
+            else:
+                # No <head> tag, add one with the CSS
+                processed_html = re.sub(
+                    r"(<html[^>]*>)",
+                    rf"\1<head><style>{css_text}</style></head>",
+                    html_text,
+                    count=1,
+                    flags=re.I,
+                )
+                # If no <html> tag either, just prepend to the beginning
+                if processed_html == html_text:
+                    processed_html = f"<head><style>{css_text}</style></head>{html_text}"
 
         log.info("Tailwind CSS v4 compiled and inlined successfully")
     else:
-        log.info("No Tailwind v4 CDN script found, proceeding with standard HTML processing")
+        log.warning("No Tailwind v4 CDN script found, proceeding with standard HTML processing")
         processed_html = html_text
 
     with atomic_output_file(dest_html) as dest_temp:
@@ -142,7 +207,11 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
             # Write processed HTML to a temp file for html-minifier-terser
             with tempfile.NamedTemporaryFile(
-                mode="w", prefix=dest_html.stem, suffix=".html", delete=False, dir=dest_html.parent
+                mode="w",
+                prefix=dest_html.stem,
+                suffix=".html",
+                delete=False,
+                dir=dest_html.parent,
             ) as tmp_file:
                 tmp_file.write(processed_html)
                 tmp_html_path = tmp_file.name
@@ -196,7 +265,7 @@ def minify_tw_html(src_html: Path, dest_html: Path, *, minify_html: bool = True)
 
     # Print concise summary
     actions: list[str] = []
-    if tailwind_found:
+    if should_compile_tailwind:
         actions.append("Tailwind CSS compiled")
     if minify_html:
         actions.append("HTML minified")

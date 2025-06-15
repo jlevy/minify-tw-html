@@ -44,7 +44,22 @@ Installed 6 packages in 8ms
 Installed 1 executable: minify-tw-html
 
 $ minify-tw-html --help
-usage: minify-tw-html [-h] [--no-minify] [--verbose] src_html dest_html
+usage: minify-tw-html [-h] [--version] [--no-minify] [--preflight] [--tailwind] [--verbose]
+                      src_html dest_html
+
+HTML minification with Tailwind CSS v4 compilation
+
+positional arguments:
+  src_html       Input HTML file.
+  dest_html      Output HTML file.
+
+options:
+  -h, --help     show this help message and exit
+  --version      show program's version number and exit
+  --no-minify    Skip HTML minification (only compile Tailwind if present).
+  --preflight    Enable Tailwind's preflight CSS reset (disabled by default to preserve custom styles).
+  --tailwind     Force Tailwind CSS compilation even if CDN script is not present.
+  --verbose, -v  Enable verbose logging.
 
 CLI for HTML minification with Tailwind CSS v4 compilation.
 
@@ -55,16 +70,8 @@ Minification includes:
 - HTML structure: whitespace removal, comment removal
 - Inline CSS: all <style> tags and style attributes are minified
 - Inline JavaScript: all <script> tags are minified (not external JS files)
-
-positional arguments:
-  src_html       Input HTML file.
-  dest_html      Output HTML file.
-
-options:
-  -h, --help     show this help message and exit
-  --no-minify    Skip HTML minification (only compile Tailwind if present).
-  --verbose, -v  Enable verbose logging.
-```
+- Tailwind CSS v4: if `--tailwind` is given or the Play CDN script is detected,
+  it compiles and inlines the Tailwind CSS into the HTML file.
 
 Now take a file you want to minimize.
 Let's put this file into `page.html`. Note we are using the Play CDN for simple
