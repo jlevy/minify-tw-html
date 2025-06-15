@@ -4,14 +4,14 @@ requires-python = ">=3.11, <4.0"
 
 [[package]]
 name = "basedpyright"
-version = "1.29.2"
+version = "1.29.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nodejs-wheel-binaries" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/db/fcfced6e89a49b52694d51078c2cf626b3fe9d097c1145bb8424337d7ae6/basedpyright-1.29.2.tar.gz", hash = "sha256:12c49186003b9f69a028615da883ef97035ea2119a9e3f93a00091b3a27088a6", size = 21966851, upload-time = "2025-05-21T11:45:43.03Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/fb/bd92196a07e3b4ccee4ff2761a26a05bff77d4da089b67b4b1a547868099/basedpyright-1.29.4.tar.gz", hash = "sha256:2df1976f8591eedf4b4ce8f9d123f43e810cc8cb7cc83c53eec0e2f8044073d0", size = 21961481, upload-time = "2025-06-11T22:25:55.173Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/b7/8307208ab517ac6e5d0331ad7347624fe8b250fb6e659ba3bd081d82c890/basedpyright-1.29.2-py3-none-any.whl", hash = "sha256:f389e2997de33d038c5065fd85bff351fbdc62fa6d6371c7b947fc3bce8d437d", size = 11472099, upload-time = "2025-05-21T11:45:38.785Z" },
+    { url = "https://files.pythonhosted.org/packages/d5/dc/180fe721a2574fb3aad4051adcca196ac2d18adaf75122f5eeb47436cca2/basedpyright-1.29.4-py3-none-any.whl", hash = "sha256:e087513979972f83010639c6c1a1c13dd3b1d24ee45f8ecff747962cc2063d6f", size = 11476859, upload-time = "2025-06-11T22:25:52.01Z" },
 ]
 
 [[package]]
@@ -148,11 +148,11 @@ wheels = [
 
 [[package]]
 name = "pluralizer"
-version = "1.2.0"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c4/11/5e3e7af16fe46612265e6cfed0f1c8f49fb0cdb424d314154d5a3b364bac/pluralizer-1.2.0.tar.gz", hash = "sha256:fe3fb8e1e53fabf372e77d8cbebe04b0f8fc7db853aeff50095dbd5628ac39c5", size = 6879, upload-time = "2022-06-07T09:35:55.835Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/77/b3/bf7fe8341d5eb6b86f9b99d0419efe431b83be105db4d70646138fbadd30/pluralizer-2.0.0.tar.gz", hash = "sha256:3d48412c17397f52fb5b5485cbb5427b687d6e21daca0e65d9dfc16a989ec0c9", size = 13600, upload-time = "2025-06-11T12:31:56.552Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/2c/3e2dd10df7fffa916ceba9eef10f7e90d22cf90acec269914bb63081b1aa/pluralizer-1.2.0-py3-none-any.whl", hash = "sha256:d8f92ffa787661d9e704d1e0d8abc6c6c4bbaae9e790d7c709707eafbe17ed12", size = 7632, upload-time = "2022-06-07T09:35:54.457Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/ef/ac208cfa9d708d246aca64192fca9bd6518618998c4efa8e765ceac34405/pluralizer-2.0.0-py3-none-any.whl", hash = "sha256:282e536f989cc30eeb4db69b63539030b2e50f1c93d737b783a924fe486d8141", size = 7676, upload-time = "2025-06-11T12:31:55.37Z" },
 ]
 
 [[package]]
