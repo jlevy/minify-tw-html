@@ -7,7 +7,7 @@ Repository = "https://github.com/jlevy/minify-tw-html"
 
 [project]
 name = "minify-tw-html"
-description = "Python package and CLI for html-minifier-terser plus Tailwind minification"
+description = "Standalone CLI and Python package for modern HTML/CSS/JS/Tailwind minification"
 authors = [
     { name="Joshua Levy", email="joshua@cal.berkeley.edu" },
 ]
