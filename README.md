@@ -26,7 +26,7 @@ fully minify the resulting HTML/CSS/JavaScript.
 
 ## For Anyone With Static HTML/CSS/JavaScript Pages
 
-Even if you'renot using tailwindf, it's also a convenenient CLI and Python library to
+Even if you're not using tailwind, it's also a convenenient CLI and Python library to
 wrap html-minifier-terser.
 If you're using Python, it can be added as a PyPI dependency to a project and used as a
 minification library from Python.
