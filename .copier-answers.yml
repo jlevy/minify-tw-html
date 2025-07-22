@@ -1,9 +1,9 @@
 # Changes here will be overwritten by Copier. Do not edit manually.
-_commit: v0.2.10
+_commit: v0.2.15
 _src_path: gh:jlevy/simple-modern-uv
 package_author_email: joshua@cal.berkeley.edu
 package_author_name: Joshua Levy
-package_description: Python package and CLI for html-minifier-terser plus Tailwind
+package_description: Standalone CLI and Python package for modern HTML/CSS/JS/Tailwind minification
     minification
 package_github_org: jlevy
 package_module: minify_tw_html
