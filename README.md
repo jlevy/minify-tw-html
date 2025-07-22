@@ -6,10 +6,10 @@ configurable, well-tested, JavaScript-based HTML minifier) and the
 [Tailwind v4 CLI](https://tailwindcss.com/docs/installation/tailwind-cli) (the recently
 updated Tailwind compiler).
 
-## Simple, Modern Minification of Static HTML/CSS/JavaScript Pages
+## Minification of Static HTML/CSS/JavaScript Pages
 
 This is a convenient CLI and Python library to fully minify HTML, CSS, and JavaScript
-using html-minifier-terser one of the best modern minifiers.
+using html-minifier-terser, one of the best modern minifiers.
 
 If you’re using Python, it can be added as a PyPI dependency to a project and used as a
 minification library from Python and it internally handles (and caches) the Node
@@ -25,7 +25,7 @@ it’s self-contained.
 The required npm packages are installed locally within the Python site-packages
 directory.
 
-### Simple Tailwind v4 Compilation
+## Tailwind v4 Compilation
 
 In addition to general minification, minify-tw-html also compiles Tailwind CSS v4.
 
