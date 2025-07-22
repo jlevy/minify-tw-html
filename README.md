@@ -29,25 +29,25 @@ directory.
 
 In addition to general minification, minify-tw-html also compiles Tailwind CSS v4.
 
-You might think Tailwind v4 compilation would be a simple operation, like a single CLI
-command, but it’s not quite that simple.
-The modern Tailwind CLI seems to assume you have a full hot-reloading JavaScript app
-setup. This is great if you do, but quite inconvenient if you don’t want a build process
-and just want to compile and minify a static page.
+You might think Tailwind v4 compilation would be an easy operation, like a single CLI
+command, but it seems like it’s not quite that simple.
+The modern Tailwind CLI seems developed around the use case of a full hot-reloading
+JavaScript app setup.
+This is great if you do, but quite inconvenient if you don’t to set up a package.json
+and other things and just want to compile and minify a static HTML page!
 
-Simple static page development is easy via the
+With Tailwind, simple zero-build page development is easy via the
 [Play CDN](https://tailwindcss.com/docs/installation/play-cdn).
 To do this, you put a tag like `<script
 src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>` in your code.
 
 However, that setup is not recommended by Tailwind for production use due to its poor
 performance (scanning the whole page at load time to find Tailwind classes).
-
-This tool helps if you want to use Tailwind as a sort of “drop in” to static web pages
-so it works with zero build, using the script tag.
-If you then run minify-tw-html, it will detect the Tailwind CDN script and compile and
-inline the production Tailwind CSS necessary for your page (and then minify everything
-else, including HTML and JavaScript).
+This tool lets you use any Play CDN link so you can “drop in” Tailwind on static web
+pages during development.
+Once you want to minify before publishing it, run minify-tw-html, and will detect the
+Tailwind CDN script and compile and inline the production Tailwind CSS necessary for
+your page (and then minify everything else, including HTML and JavaScript).
 
 ## Are There Alternatives?
 
