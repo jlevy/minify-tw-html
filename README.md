@@ -1,5 +1,9 @@
 # minify-tw-html
 
+**❗️ UPDATE:** This package has been renamed to
+[tminify](https://github.com/jlevy/tminify).
+Use that package instead!
+
 This is a convenient CLI and Python lib wrapper for
 [html-minifier-terser](https://github.com/terser/html-minifier-terser) (the highly
 configurable, well-tested, JavaScript-based HTML minifier) and the
