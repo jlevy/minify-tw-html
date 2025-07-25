@@ -7,7 +7,7 @@ Repository = "https://github.com/jlevy/tminify"
 
 [project]
 name = "tminify"
-description = "Standalone CLI and Python package for modern HTML/CSS/JS/Tailwind minification"
+description = "Standalone, modern HTML/CSS/JS and Tailwind v4 minification for CLI and Python using terser"
 authors = [
     { name="Joshua Levy", email="joshua@cal.berkeley.edu" },
 ]

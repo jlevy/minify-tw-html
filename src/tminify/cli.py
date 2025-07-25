@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-CLI for HTML minification with Tailwind CSS v4 compilation.
+Standalone, modern HTML/CSS/JS and Tailwind v4 minification for CLI and Python using terser
 
 This script can be used for general HTML minification (including inline CSS/JS) and/or
 Tailwind CSS v4 compilation and inlining (replacing CDN script with compiled CSS).
