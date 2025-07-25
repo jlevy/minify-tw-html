@@ -1,6 +1,6 @@
 from importlib.metadata import version
 
-APP_NAME = "minify-tw-html"
+APP_NAME = "tminify"
 
 DESCRIPTION = """HTML minification with Tailwind CSS v4 compilation"""
 

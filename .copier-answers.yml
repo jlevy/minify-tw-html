@@ -4,7 +4,6 @@ _src_path: gh:jlevy/simple-modern-uv
 package_author_email: joshua@cal.berkeley.edu
 package_author_name: Joshua Levy
 package_description: Standalone CLI and Python package for modern HTML/CSS/JS/Tailwind minification
-    minification
 package_github_org: jlevy
-package_module: minify_tw_html
-package_name: minify-tw-html
+package_module: tminify
+package_name: tminify

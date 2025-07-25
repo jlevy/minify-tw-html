@@ -1,10 +1,4 @@
-**❗️ UPDATE:** This package has been renamed to
-[tminify](https://github.com/jlevy/tminify).
-Use that package instead!
-
-* * *
-
-# minify-tw-html
+# tminify
 
 This is a convenient CLI and Python lib wrapper for
 [html-minifier-terser](https://github.com/terser/html-minifier-terser) (the highly
@@ -33,7 +27,7 @@ directory.
 
 ## Tailwind v4 Compilation
 
-In addition to general minification, minify-tw-html also compiles Tailwind CSS v4.
+In addition to general minification, tminify also compiles Tailwind CSS v4.
 
 You might think Tailwind v4 compilation would be an easy operation, like a single CLI
 command, but it seems like it’s not quite that simple.
@@ -51,7 +45,7 @@ However, that setup is not recommended by Tailwind for production use due to its
 performance (scanning the whole page at load time to find Tailwind classes).
 This tool lets you use any Play CDN link so you can “drop in” Tailwind on static web
 pages during development.
-Once you want to minify before publishing it, run minify-tw-html, and will detect the
+Once you want to minify before publishing it, run tminify, and will detect the
 Tailwind CDN script and compile and inline the production Tailwind CSS necessary for
 your page (and then minify everything else, including HTML and JavaScript).
 
@@ -71,14 +65,14 @@ with robust HTML/CSS/JS minification.
 I recommend you [use uv](installation.md):
 
 ```shell
-uv tool install --upgrade minify-tw-html
+uv tool install --upgrade tminify
 ```
 
 ## Example Usage
 
 ```shell
-$ minify-tw-html --help
-usage: minify-tw-html [-h] [--version] [--no_minify] [--preflight] [--tailwind] [--verbose] src_html dest_html
+$ tminify --help
+usage: tminify [-h] [--version] [--no_minify] [--preflight] [--tailwind] [--verbose] src_html dest_html
 
 HTML minification with Tailwind CSS v4 compilation
 
@@ -104,7 +98,7 @@ Minification includes:
 - Inline CSS: all <style> tags and style attributes are minified
 - Inline JavaScript: all <script> tags are minified (not external JS files)
 
-minify-tw-html v0.1.3.dev4+d976d28
+tminify v0.1.3.dev4+d976d28
 ```
 
 Now take a file you want to minimize.
@@ -151,16 +145,16 @@ zero-build development:
 If you want to minify it and compile all Tailwind CSS:
 
 ```shell
-$ minify-tw-html page.html page.min.html --verbose
+$ tminify page.html page.min.html --verbose
 Tailwind v4 CDN script detected: will compile and inline Tailwind CSS
 Found 1 <style> tags in body size 1091 bytes, returning CSS of size 245 bytes
 Tailwind input CSS:
    @import "tailwindcss";
-   @source "/Users/levy/wrk/github/minify-tw-html/page.html";
+   @source "/Users/levy/wrk/github/tminify/page.html";
            /* Custom CSS that will be minified alongside Tailwind */
            .custom-shadow { 
                box-shadow:…
-Tailwind config: /Users/levy/wrk/github/minify-tw-html/tmp4g35wsgu/tailwind.config.js:
+Tailwind config: /Users/levy/wrk/github/tminify/tmp4g35wsgu/tailwind.config.js:
    module.exports = {
      "content": [
        "page.html"
@@ -173,14 +167,14 @@ Tailwind config: /Users/levy/wrk/github/minify-tw-html/tmp4g35wsgu/tailwind.conf
      },
      "plugins": []
    };
-Running: npx @tailwindcss/cli --input - --output /Users/levy/wrk/github/minify-tw-html/tmp4g35wsgu/tailwind.min.css --config /Users/levy/wrk/github/minify-tw-html/tmp4g35wsgu/tailwind.config.js --minify
+Running: npx @tailwindcss/cli --input - --output /Users/levy/wrk/github/tminify/tmp4g35wsgu/tailwind.min.css --config /Users/levy/wrk/github/tminify/tmp4g35wsgu/tailwind.config.js --minify
 Tailwind stderr: ≈ tailwindcss v4.1.8
 
 Done in 54ms
 
 Tailwind CSS v4 compiled and inlined successfully
 Minifying HTML (including inline CSS and JS)...
-Running: npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o /Users/levy/wrk/github/minify-tw-html/page.min.htmlk5geeie0v48wv.partial /Users/levy/wrk/github/minify-tw-html/page.mindwa99o7p.html
+Running: npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o /Users/levy/wrk/github/tminify/page.min.htmlk5geeie0v48wv.partial /Users/levy/wrk/github/tminify/page.mindwa99o7p.html
 HTML minified and written: page.min.html
 Tailwind CSS compiled, HTML minified: 1091 bytes → 6893 bytes (+531.8%) in 1s
 
@@ -195,13 +189,13 @@ in the CSS for instant loading (for large pages it is more likely to shrink).
 
 ## Python Use
 
-As a library: `uv add minify-tw-html` (or `pip install minify-tw-html` etc.). Then:
+As a library: `uv add tminify` (or `pip install tminify` etc.). Then:
 
 ```python
 from pathlib import Path
-from minify_tw_html import minify_tw_html
+from tminify import tminify
 
-minify_tw_html(Path("page.html"), Path("page.min.html"))
+tminify(Path("page.html"), Path("page.min.html"))
 ```
 
 * * *

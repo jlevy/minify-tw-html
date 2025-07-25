@@ -81,7 +81,7 @@ wheels = [
 ]
 
 [[package]]
-name = "minify-tw-html"
+name = "tminify"
 source = { editable = "." }
 dependencies = [
     { name = "prettyfmt" },

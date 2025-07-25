@@ -1,5 +1,5 @@
 {
-  "name": "minify-tw-html",
+  "name": "tminify",
   "version": "1.0.0",
   "description": "JavaScript dependencies for HTML minification with Tailwind CSS v4 compilation",
   "dependencies": {

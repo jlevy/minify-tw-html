@@ -1,12 +1,12 @@
 # ---- Project Info and Dependencies ----
 
 [project.urls]
-Repository = "https://github.com/jlevy/minify-tw-html"
+Repository = "https://github.com/jlevy/tminify"
 # Homepage = "https://..."
 # Documentation = "https://..."
 
 [project]
-name = "minify-tw-html"
+name = "tminify"
 description = "Standalone CLI and Python package for modern HTML/CSS/JS/Tailwind minification"
 authors = [
     { name="Joshua Levy", email="joshua@cal.berkeley.edu" },
@@ -57,7 +57,7 @@ dev = [
 
 [project.scripts]
 # Add script entry points here:
-minify-tw-html = "minify_tw_html.cli:main"
+tminify = "tminify.cli:main"
 
 
 # ---- Build system ----
@@ -82,24 +82,24 @@ bump = "true"
 
 [tool.hatch.build.targets.wheel]
 # The source location for the package.
-packages = ["src/minify_tw_html"]
+packages = ["src/tminify"]
 # Exclude node_modules from wheel - they will be installed at runtime
 exclude = [
-  "src/minify_tw_html/javascript/node_modules",
-  "src/minify_tw_html/javascript/package-lock.json",
-  "src/minify_tw_html/javascript/.gitignore",
+  "src/tminify/javascript/node_modules",
+  "src/tminify/javascript/package-lock.json",
+  "src/tminify/javascript/.gitignore",
 ]
 
 [tool.hatch.build.targets.wheel.force-include]
 # Include package.json which will be used for npm install at runtime
-"src/minify_tw_html/javascript/package.json" = "minify_tw_html/javascript/package.json"
+"src/tminify/javascript/package.json" = "tminify/javascript/package.json"
 
 [tool.hatch.build.targets.sdist]
 # Exclude node_modules from source distribution too
 exclude = [
-  "src/minify_tw_html/javascript/node_modules",
-  "src/minify_tw_html/javascript/package-lock.json",
-  "src/minify_tw_html/javascript/.gitignore",
+  "src/tminify/javascript/node_modules",
+  "src/tminify/javascript/package-lock.json",
+  "src/tminify/javascript/.gitignore",
 ]
 
 
@@ -177,7 +177,7 @@ reportUnreachable = false
 [tool.codespell]
 # Add here as needed:
 # ignore-words-list = "foo,bar"
-skip = "src/minify_tw_html/javascript/node_modules"
+skip = "src/tminify/javascript/node_modules"
 
 [tool.pytest.ini_options]
 python_files = ["*.py"]

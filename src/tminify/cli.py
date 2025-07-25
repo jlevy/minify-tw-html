@@ -16,8 +16,8 @@ import logging
 from pathlib import Path
 from textwrap import dedent
 
-from minify_tw_html.main import minify_tw_html
-from minify_tw_html.version import DESCRIPTION, get_version_name
+from tminify.main import tminify
+from tminify.version import DESCRIPTION, get_version_name
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -62,7 +62,7 @@ def main():
         level = logging.WARNING
     logging.basicConfig(level=level, format="%(message)s")
 
-    minify_tw_html(
+    tminify(
         args.src_html,
         args.dest_html,
         minify_html=not args.no_minify,

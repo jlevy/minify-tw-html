@@ -41,3 +41,6 @@ clean:
 	-rm -rf .venv/
 	-rm -rf CLAUDE.md AGENTS.md
 	-find . -type d -name "__pycache__" -exec rm -rf {} +
+
+	# Remove JavaScript package files.
+	-rm -rf src/tminify/javascript/node_modules src/tminify/javascript/package-lock.json
