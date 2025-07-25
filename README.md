@@ -1,3 +1,9 @@
+**❗️ UPDATE:** This package has been renamed to
+[tminify](https://github.com/jlevy/tminify).
+Use that package instead!
+
+* * *
+
 # minify-tw-html
 
 This is a convenient CLI and Python lib wrapper for
