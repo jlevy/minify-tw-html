@@ -1,64 +1,8 @@
 # tminify
 
 This is a convenient CLI and Python lib wrapper for
-[html-minifier-terser](https://github.com/terser/html-minifier-terser) (the highly
-configurable, well-tested, JavaScript-based HTML minifier) and the
-[Tailwind v4 CLI](https://tailwindcss.com/docs/installation/tailwind-cli) (the recently
-updated Tailwind compiler).
-
-## Minification of Static HTML/CSS/JavaScript Pages
-
-This is a convenient CLI and Python library to fully minify HTML, CSS, and JavaScript
-using html-minifier-terser, one of the best modern minifiers.
-
-If you’re using Python, it can be added as a PyPI dependency to a project and used as a
-minification library from Python and it internally handles (and caches) the Node
-dependencies.
-
-Once it is installed, you can just use it on static files with a single command, with no
-package.json or npm project setup!
-
-Internally, it checks for an npm installation and uses that, raising an error if not
-available.
-Once it finds npm, it does its own internal `npm install` of required tools so
-it’s self-contained.
-The required npm packages are installed locally within the Python site-packages
-directory.
-
-## Tailwind v4 Compilation
-
-In addition to general minification, tminify also compiles Tailwind CSS v4.
-
-You might think Tailwind v4 compilation would be an easy operation, like a single CLI
-command, but it seems like it’s not quite that simple.
-The modern Tailwind CLI seems developed around the use case of a full hot-reloading
-JavaScript app setup.
-This is great if you do, but quite inconvenient if you don’t to set up a package.json
-and other things and just want to compile and minify a static HTML page!
-
-With Tailwind, simple zero-build page development is easy via the
-[Play CDN](https://tailwindcss.com/docs/installation/play-cdn).
-To do this, you put a tag like `<script
-src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>` in your code.
-
-However, that setup is not recommended by Tailwind for production use due to its poor
-performance (scanning the whole page at load time to find Tailwind classes).
-This tool lets you use any Play CDN link so you can “drop in” Tailwind on static web
-pages during development.
-Once you want to minify before publishing it, run tminify, and will detect the
-Tailwind CDN script and compile and inline the production Tailwind CSS necessary for
-your page (and then minify everything else, including HTML and JavaScript).
-
-## Are There Alternatives?
-
-Previously I had been using the [minify-html](https://github.com/wilsonzlin/minify-html)
-(which has a convenient [Python package](https://pypi.org/project/minify-html/)) for
-general minification.
-It is great and fast.
-But I found I kept running into
-[issues](https://github.com/wilsonzlin/minify-html/issues/236) and in any case wanted
-proper Tailwind v4 compilation, so switched to this of combining Tailwind compilation
-with robust HTML/CSS/JS minification.
+[html-minifier-terser](https://github.com/terser/html-minifier-terser)
+[Tailwind v4 CLI](https://tailwindcss.com/docs/installation/tailwind-cli)
 
 ## Installation
 
@@ -68,7 +12,7 @@ I recommend you [use uv](installation.md):
 uv tool install --upgrade tminify
 ```
 
-## Example Usage
+Run `--help` for details:
 
 ```shell
 $ tminify --help
@@ -101,7 +45,65 @@ Minification includes:
 tminify v0.1.3.dev4+d976d28
 ```
 
-Now take a file you want to minimize.
+## Minification of Static HTML/CSS/JavaScript Pages
+
+The first use case for tminify is as a CLI or Python function to minify HTML, CSS, and
+JavaScript using html-minifier-terser, the highly configurable, well-tested,
+JavaScript-based HTML minifier.
+
+It makes this minifier quick to install with uv.
+You can then use it as a CLI tool or it can be added as a PyPI dependency to a project
+and used as a minification library from Python.
+It then internally handles (and caches) the Node dependencies.
+
+Once it is installed, you can just use it on static files with a single command, with no
+package.json or npm project setup!
+
+Internally, it checks for an npm installation and uses that, raising an error if not
+available.
+Once it finds npm, it does its own internal `npm install` of required tools so
+it’s self-contained.
+The required npm packages are installed locally within the Python site-packages
+directory.
+
+## Tailwind v4 Compilation
+
+In addition to general minification, tminify also compiles Tailwind CSS v4 standalone,
+without other project config or setup.
+
+You might think Tailwind v4 compilation would be as simple as a single CLI command, but
+it seems like it’s not, since the modern Tailwind CLI seems developed around the use
+case of a full hot-reloading JavaScript app setup.
+This is fine if that’s the use case, but quite inconvenient if you don’t to set up a
+package.json and other things and just want to compile and minify a static HTML page.
+
+With Tailwind, simple zero-build page development is easy via the
+[Play CDN](https://tailwindcss.com/docs/installation/play-cdn).
+To do this, you put a tag like `<script
+src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>` in your code.
+
+However, that setup is not recommended by Tailwind for production use due to its poor
+performance (scanning the whole page at load time to find Tailwind classes).
+This tool lets you use any Play CDN link so you can “drop in” Tailwind on static web
+pages during development.
+Once you want to minify before publishing it, run tminify, and will detect the Tailwind
+CDN script and compile and inline the production Tailwind CSS necessary for your page
+(and then minify everything else, including HTML and JavaScript).
+
+## Are There Alternatives?
+
+Previously I had been using the [minify-html](https://github.com/wilsonzlin/minify-html)
+(which has a convenient [Python package](https://pypi.org/project/minify-html/)) for
+general minification.
+It is great and fast.
+But I found I kept running into
+[issues](https://github.com/wilsonzlin/minify-html/issues/236) and in any case wanted
+proper Tailwind v4 compilation, so switched to this of combining Tailwind compilation
+with robust HTML/CSS/JS minification.
+
+## Example Usage
+
+Take a file you want to minimize.
 Let’s put this file into `page.html`. Note we are using the Play CDN for simple
 zero-build development:
 
